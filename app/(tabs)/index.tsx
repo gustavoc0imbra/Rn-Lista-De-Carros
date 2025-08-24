@@ -58,7 +58,7 @@ export default function HomeScreen() {
     setShowForm(false);
   };
 
-  const addItem = () => {
+  const addCar = () => {
     if(selectedBrand === -1) {
       console.log("Marca não selecionada")
       Alert.alert("Atenção", "Favor selecionar uma marca!");
@@ -91,6 +91,32 @@ export default function HomeScreen() {
     setShowForm(false);
   };
 
+  const handleDeleteCar = (car: Car) => {
+    const isRegistered = cars.find((item) => item.id === car.id) !== undefined;
+
+    if(!isRegistered) {
+      Alert.alert("Atenção", "Favor selecionar um carro válido!");
+      return;
+    }
+
+    Alert.alert("Atenção", "Deseja realmente deletar este carro?", [
+      {
+        text: "Sim",
+        onPress: () => {
+          setCars((old) => old.filter((item) => item.id === car.id));
+        }
+      },
+      {
+        text: "Não",
+        onPress: () => {
+          return;
+        }
+      }
+    ]);
+
+    console.log(cars)
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>Lista de jogos favoritos</Text>
@@ -100,7 +126,7 @@ export default function HomeScreen() {
           <View style={{ gap: 16, backgroundColor: "#e6e6e6ff", padding: 6 }}>
             <View>
               <Picker
-                selectedValue={brands[0].id}
+                selectedValue={selectedBrand}
                 onValueChange={(itemValue, itemIndex) =>{
                   setSelectedBrand(Number.parseInt(itemValue))
                 }}
@@ -119,7 +145,7 @@ export default function HomeScreen() {
               />
             </View>
             
-            <TouchableOpacity style={[styles.button]} onPress={addItem}>
+            <TouchableOpacity style={[styles.button]} onPress={addCar}>
               <Text style={[styles.textCenter, styles.textBold, styles.textWhite]}>Salvar</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.button, styles.dangerButton]} onPress={handleCancelAddItem}>
@@ -136,6 +162,7 @@ export default function HomeScreen() {
         renderItem={({ item }) => (
           <TouchableOpacity
             key={item.id}
+            onPress={() => handleDeleteCar(item)}
           >
             <Text style={{ backgroundColor: "white" }}>{item.id} - {item.name} - ({item.brand.id} - {item.brand.name})</Text>
           </TouchableOpacity>
