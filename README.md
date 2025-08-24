@@ -1,50 +1,40 @@
-# Welcome to your Expo app 👋
+# Lista de carros
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
-
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+## Instalando o projeto
+Abra pelo terminal no diretório que deseja e clone o projeto
+```
+git clone https://github.com/gustavoc0imbra/Rn-Lista-De-Carros.git
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Após isto acesse a pasta do projeto e instale as dependências do projeto pelo comando:
+```
+npm install
+```
 
-## Learn more
+Pronto, após terminar de baixar só iniciar o projeto.
 
-To learn more about developing your project with Expo, look at the following resources:
+## Iniciando o projeto
+Basta rodar o seguinte comando no diretório do projeto:
+```
+npm start
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Utilizando o projeto
+Ao entrar será exibido uma lista inicial com alguns exemplos de carros.
 
-## Join the community
+## Para adicionar um carro novo
+- Clique no botão localizado no canto inferior direito e será exibido o formulário para adicionar.
 
-Join our community of developers creating universal apps.
+- Selecione a marca que deseja
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- Insira o nome do modelo
+
+- Clique em salvar, se caso não preencher uma descrição será avisado para preencher com o nome do modelo
+
+- Ou se deseja cancelar a ação basta clicar no botão cancelar, que irá resetar o campo e remover formulário da tela
+
+## Removendo um veículo
+- Clique na linha do veículo que deseja remover
+- Será perguntado se deseja remover
+- Se sim, será removido o registro
+- Se não, irá manter o registro
