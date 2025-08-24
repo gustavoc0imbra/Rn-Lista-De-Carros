@@ -29,6 +29,18 @@ export default function HomeScreen() {
       id: 3,
       name: "Pegeout"
     },
+    {
+      id: 4,
+      name: "Hyundai"
+    },
+    {
+      id: 5,
+      name: "Toyota"
+    },
+    {
+      id: 6,
+      name: "Honda"
+    },
   ];
 
   const [cars, setCars] = useState<Car[]>([
@@ -103,7 +115,7 @@ export default function HomeScreen() {
       {
         text: "Sim",
         onPress: () => {
-          setCars((old) => old.filter((item) => item.id === car.id));
+          setCars((old) => old.filter((item) => item.id !== car.id));
         }
       },
       {
@@ -113,13 +125,11 @@ export default function HomeScreen() {
         }
       }
     ]);
-
-    console.log(cars)
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>Lista de jogos favoritos</Text>
+      <Text style={styles.header}>Lista de carros favoritos</Text>
 
       {
         showForm && (
@@ -167,11 +177,11 @@ export default function HomeScreen() {
             <Text style={{ backgroundColor: "white" }}>{item.id} - {item.name} - ({item.brand.id} - {item.brand.name})</Text>
           </TouchableOpacity>
         )}
-        ListEmptyComponent={<Text>Sem registros :</Text>}
+        ListEmptyComponent={<Text style={styles.textBold}>Sem registros.</Text>}
       />
 
       <TouchableOpacity style={styles.fab} onPress={handleAddItem}>
-        <Text>+</Text>
+        <Text style={[styles.textBold, styles.textWhite]}>+</Text>
       </TouchableOpacity>
 
     </SafeAreaView>
@@ -186,6 +196,7 @@ const styles = StyleSheet.create({
     borderColor: "#1b29f0ff",
     borderRadius: 10,
     padding: 10,
+    minWidth: 150,
   },
   item: { padding: 12 },
   header: { fontSize: 22, fontWeight: "bold", textTransform: "uppercase" },
@@ -202,11 +213,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#1b29f0ff",
     position: "absolute",
     right: 16,
-    bottom: 8,
+    bottom: 32,
     padding: 6,
-    borderRadius: 28,
-    width: 56,
-    heigth: 56,
+    borderRadius: 100,
+    width: 64,
+    height: 64,
     justifyContent: "center",
     alignItems: "center",
     boxShadow: "0px 0px 0px #000"
