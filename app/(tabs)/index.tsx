@@ -1,75 +1,196 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { useState } from 'react';
+import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { Picker } from '@react-native-picker/picker';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+type Brand = {
+  id: number,
+  name: string
+};
+
+type Car = {
+  id: number;
+  brand: Brand,
+  name: string;
+};
 
 export default function HomeScreen() {
+  const brands: Brand[] = [
+    {
+      id: 1,
+      name: "Chevrolet"
+    },
+    {
+      id: 2,
+      name: "Fiat"
+    },
+    {
+      id: 3,
+      name: "Pegeout"
+    },
+  ];
+
+  const [cars, setCars] = useState<Car[]>([
+    { id: 1, brand: brands[0], name: "Corsa" },
+    { id: 2, brand: brands[1], name: "Palio" },
+  ]);
+
+  const [showForm, setShowForm] = useState<Boolean>(false);
+  const [carDesc, setCarDesc] = useState<string>("");
+  const [selectedBrand, setSelectedBrand] = useState<number>(1);
+  const [nextId, setNextId] = useState<number>(3);
+  const [selectedCar, setSelectedCar] = useState(null);
+
+  const Item = ({ item }: { item: Car }) => (
+    <View style={styles.item}>
+      <Text>
+        {item.id} - {item.name} - ({item.brand.id} - {item.brand.name})
+      </Text>
+    </View>
+  );
+
+  const handleAddItem = () => {
+    setShowForm(true);
+  };
+
+  const handleCancelAddItem = () => {
+    setShowForm(false);
+  };
+
+  const addItem = () => {
+    if(selectedBrand === -1) {
+      console.log("Marca não selecionada")
+      Alert.alert("Atenção", "Favor selecionar uma marca!");
+      return;
+    }
+
+    const brand = brands.find((item) => item.id === selectedBrand);
+
+    if(brand === undefined) {
+      console.log("Marca não encontrada")
+      Alert.alert("Atenção", "Selecione uma marca válida!");
+      return;
+    }
+
+    if(carDesc.length === 0 || !carDesc.trim()) {
+      Alert.alert("Atenção", "Favor digitar o nome do carro");
+      return;
+    }
+
+    const newCar: Car = {
+      id: nextId,
+      brand: brand,
+      name: carDesc
+    };
+
+    setCars((old) => [...old, newCar]);
+    setNextId((actual) => ++actual);
+    setSelectedBrand(brands[0].id);
+    setCarDesc("");
+    setShowForm(false);
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.header}>Lista de jogos favoritos</Text>
+
+      {
+        showForm && (
+          <View style={{ gap: 16, backgroundColor: "#e6e6e6ff", padding: 6 }}>
+            <View>
+              <Picker
+                selectedValue={brands[0].id}
+                onValueChange={(itemValue, itemIndex) =>{
+                  setSelectedBrand(Number.parseInt(itemValue))
+                }}
+              >
+                {
+                  brands.map((brand) => {
+                    return <Picker.Item key={brand.id} label={brand.name} value={brand.id} />
+                  })
+                }
+              </Picker>
+              <Text style={styles.label}>Carro:</Text>
+              <TextInput
+                placeholder="Digite o nome do carro"
+                onChangeText={setCarDesc}
+                style={styles.input}
+              />
+            </View>
+            
+            <TouchableOpacity style={[styles.button]} onPress={addItem}>
+              <Text style={[styles.textCenter, styles.textBold, styles.textWhite]}>Salvar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.button, styles.dangerButton]} onPress={handleCancelAddItem}>
+              <Text style={[styles.textCenter, styles.textBold, styles.textWhite]}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        )
+      }
+
+
+      <FlatList
+        data={[...cars].sort((a, b) => a.id - b.id)}
+        keyExtractor={(item) => String(item.id)}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            key={item.id}
+          >
+            <Text style={{ backgroundColor: "white" }}>{item.id} - {item.name} - ({item.brand.id} - {item.brand.name})</Text>
+          </TouchableOpacity>
+        )}
+        ListEmptyComponent={<Text>Sem registros :</Text>}
+      />
+
+      <TouchableOpacity style={styles.fab} onPress={handleAddItem}>
+        <Text>+</Text>
+      </TouchableOpacity>
+
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: { justifyContent: "center", alignItems: "center", flex: 1, padding: 16, backgroundColor: "#FFF" },
+  label: { marginTop: 8, marginBottom: 4, fontSize: 12, color: "#444" },
+  input: {
+    borderWidth: 1,
+    borderColor: "#1b29f0ff",
+    borderRadius: 10,
+    padding: 10,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  item: { padding: 12 },
+  header: { fontSize: 22, fontWeight: "bold", textTransform: "uppercase" },
+  button: {
+    borderRadius: 6,
+    padding: 8,
+    backgroundColor: "#1b29f0ff",
+    textAlign: "center"
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  dangerButton: {
+    backgroundColor: "#fc6d6dff",
   },
+  fab: {
+    backgroundColor: "#1b29f0ff",
+    position: "absolute",
+    right: 16,
+    bottom: 8,
+    padding: 6,
+    borderRadius: 28,
+    width: 56,
+    heigth: 56,
+    justifyContent: "center",
+    alignItems: "center",
+    boxShadow: "0px 0px 0px #000"
+  },
+  textCenter: {
+    textAlign: "center"
+  },
+  textBold: {
+    fontWeight: "bold"
+  },
+  textWhite: {
+    color: "#FFF"
+  }
 });
